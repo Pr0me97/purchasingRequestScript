@@ -3,8 +3,6 @@ import os
 import xlrd
 from docx import Document
 from docx.oxml.ns import qn
-from docx.shared import Cm
-from docx.shared import RGBColor
 
 #准备写入内容
 
