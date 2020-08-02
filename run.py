@@ -2,6 +2,7 @@ import os
 
 import xlrd
 from docx import Document
+from docx.oxml.ns import qn
 
 #准备写入内容
 
@@ -35,14 +36,8 @@ def editDocxWin(info): #修改中标模板；传参info为修改的信息，类�
     docx=Document('询价单-中标.docx')
     #读取并修改模板中的段落部分
     pars = docx.paragraphs
-
-    '''
-    for par in pars:
-    # 遍历段落对象的 run 对象列表，获得每一个run对象
-        for run in par.runs:
-        # 测试（看一下 run 内字符串是否与预期一致！！！）
-            print(run.text)
-    '''
+    docx.styles['Normal'].font.name = u'宋体'
+    docx.styles['Normal']._element.rPr.rFonts.set(qn('w:eastAsia'), u'宋体')
     
     if "XXXX" in pars[0].text:
         text=pars[0].text.replace("XXXX",info[0])
@@ -60,10 +55,12 @@ def editDocxWin(info): #修改中标模板；传参info为修改的信息，类�
     text=table.cell(2,1).text.replace("XXXX","%.2f"%info[1])
     table.cell(2,1).text=text
 
-    docx.save("%s_询价单_中标.docx"%info[0])
+    docx.save("询价单/%s_询价单_中标.docx"%info[0])
 
 def editDocxCompany1(info,companyName): #修改中标模板；传参info为修改的信息，类型为list
     docx=Document('询价单-陪标1.docx')
+    docx.styles['Normal'].font.name = u'黑体'
+    docx.styles['Normal']._element.rPr.rFonts.set(qn('w:eastAsia'), u'黑体')
     #读取并修改模板中的段落部分
     pars=docx.paragraphs
     text=pars[0].text.replace("XXXX",info[0])
@@ -76,14 +73,16 @@ def editDocxCompany1(info,companyName): #修改中标模板；传参info为修�
     pars[4].text=text
     text=pars[13].text.replace("XXXX",companyName)
     pars[13].text=text
-    docx.save("%s_%s_询价单.docx"%(info[0],companyName))
+    docx.save("询价单/%s_%s_询价单.docx"%(info[0],companyName))
 
 def editDocxCompany2(info,companyName): #修改中标模板；传参info为修改的信息，类型为list
     docx=Document('询价单-陪标2.docx')
+    docx.styles['Normal'].font.name = u'楷体'
+    docx.styles['Normal']._element.rPr.rFonts.set(qn('w:eastAsia'), u'楷体')
     pars=docx.paragraphs
     text=pars[0].text.replace("XXXX",info[0])
     pars[0].text=text
-    text=pars[14].text.replace("XXXXsssss",companyName)
+    text=pars[14].text.replace("XXXX",companyName)
     pars[14].text=text
 
     table=docx.tables[0]
@@ -93,28 +92,17 @@ def editDocxCompany2(info,companyName): #修改中标模板；传参info为修�
     table.cell(1,3).text=text
     text=table.cell(2,1).text.replace("XXXX","%.2f"%info[3])
     table.cell(2,1).text=text
-    docx.save("%s_%s_询价单.docx"%(info[0],companyName))
+    docx.save("询价单/%s_%s_询价单.docx"%(info[0],companyName))
 
 def main():
     companyNameList=inputCompanyName() #输入2家陪标公司名
-
     rows=getExcelRow()
     flag=1
     while flag<=rows:
         info=readExcelData(flag)
         editDocxWin(info)
+        editDocxCompany1(info,companyNameList[0])
+        editDocxCompany2(info,companyNameList[1])
         flag+=1
 
-
-
-def test():
-    name=inputCompanyName()
-    rows=getExcelRow()
-    flag=1
-    while flag<=rows:
-        info=readExcelData(flag)
-        #editDocxCompany1(info,name[0])
-        editDocxCompany2(info,name[0])
-        flag+=1
-
-test()
+main()
