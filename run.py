@@ -3,6 +3,8 @@ import os
 import xlrd
 from docx import Document
 from docx.oxml.ns import qn
+from docx.shared import Cm
+from docx.shared import RGBColor
 
 #准备写入内容
 
@@ -45,13 +47,18 @@ def editDocxWin(info): #修改中标模板；传参info为修改的信息，类�
     
     #读取并修改模板中的表格部分
     table=docx.tables[0]
-    text=table.cell(1,1).text.replace("XXXX",info[0])
-    table.cell(1,1).text=text
-    text=table.cell(1,4).text.replace("XXXX",str(info[1]/10000))
-    table.cell(1,4).text=text
-    table.cell(1,5).text=text
 
-    #有bug，下划线格式会消失
+    cell=table.cell(1,1)
+    p=cell.paragraphs[0]
+    run=p.add_run(info[0])
+
+    cell=table.cell(1,4)
+    p=cell.paragraphs[0]
+    run=p.add_run(str(info[1]/10000)+"万元")
+    cell=table.cell(1,5)
+    p=cell.paragraphs[0]
+    run=p.add_run(str(info[1]/10000)+"万元")
+
     text=table.cell(2,1).text.replace("XXXX","%.2f"%info[1])
     table.cell(2,1).text=text
 
@@ -86,10 +93,14 @@ def editDocxCompany2(info,companyName): #修改中标模板；传参info为修�
     pars[14].text=text
 
     table=docx.tables[0]
-    text=table.cell(1,1).text.replace("XXXX",info[0])
-    table.cell(1,1).text=text
-    text=table.cell(1,3).text.replace("XXXX","%.2f"%info[3])
-    table.cell(1,3).text=text
+    cell=table.cell(1,1)
+    p=cell.paragraphs[0]
+    run=p.add_run(info[0])       
+
+    cell=table.cell(1,3)
+    p=cell.paragraphs[0]
+    run=p.add_run("%.2f元"%info[3])
+
     text=table.cell(2,1).text.replace("XXXX","%.2f"%info[3])
     table.cell(2,1).text=text
     docx.save("询价单/%s_%s_询价单.docx"%(info[0],companyName))
