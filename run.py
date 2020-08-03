@@ -3,6 +3,7 @@ import os
 import xlrd
 from docx import Document
 from docx.oxml.ns import qn
+from RmbBigMaker import RmbBigMaker
 
 #准备写入内容
 
@@ -58,6 +59,7 @@ def editDocxWin(info): #修改中标模板；传参info为修改的信息，类�
     run=p.add_run(str(info[1]/10000)+"万元")
 
     text=table.cell(2,1).text.replace("XXXX","%.2f"%info[1])
+    text=text.replace("CCCC",RmbBigMaker(str(int(info[1]))))
     table.cell(2,1).text=text
 
     docx.save("询价单/%s_询价单_中标.docx"%info[0])
@@ -73,6 +75,7 @@ def editDocxCompany1(info,companyName): #修改中标模板；传参info为修�
     text=pars[2].text.replace("XXXX",info[0])
     pars[2].text=text
     text=pars[3].text.replace("XXXX",str(info[2]/10000))
+    text=text.replace("CCCC",RmbBigMaker(str(int(info[2]))))
     pars[3].text=text
     text=pars[4].text.replace("XXXX",companyName)
     pars[4].text=text
@@ -100,6 +103,7 @@ def editDocxCompany2(info,companyName): #修改中标模板；传参info为修�
     run=p.add_run("%.2f元"%info[3])
 
     text=table.cell(2,1).text.replace("XXXX","%.2f"%info[3])
+    text=text.replace("CCCC",RmbBigMaker(str(int(info[3]))))
     table.cell(2,1).text=text
     docx.save("询价单/%s_%s_询价单.docx"%(info[0],companyName))
 
@@ -114,4 +118,5 @@ def main():
         editDocxCompany2(info,companyNameList[1])
         flag+=1
 
-main()
+main() 
+#print(RmbBigMaker(str(input('请输输入数字：'))))
