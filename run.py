@@ -118,5 +118,5 @@ def main():
         editDocxCompany2(info,companyNameList[1])
         flag+=1
 
-main() 
+#main() 
 #print(RmbBigMaker(str(input('请输输入数字：'))))
